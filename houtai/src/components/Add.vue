@@ -1,5 +1,7 @@
 <template>
     <div class="add container">
+        <!-- 弹出对应的警示框 -->
+        <Alert v-if="alert" :message="alert"></Alert>
         <h1 class="page-header">添加用户</h1>
         <form v-on:submit="addCostumers">
             <div class="well">
@@ -40,18 +42,22 @@
 </template>
 
 <script>
+import Alert from './Alert'
 export default {
     data() {
         return {
-            customer: []
+            customer: [],           // 获取user中的所有信息
+            alert: ''               // 弹出框中需要显示的信息
         }
     },
     methods: {
         addCostumers(e){
             // console.log(1111)
+            // 判断输入框中是否为空
             if (!this.customer.name || !this.customer.phone || !this.customer.email) {
-                console.log('出错')
+                this.alert = '请在对应框内输入响应信息！'
             }else{
+                // 如果不为空则获取所有输入框中输入的信息赋值给相应的对象
                 let newCustomer = {
                     name: this.customer.name,
                     phone: this.customer.phone,
@@ -61,6 +67,7 @@ export default {
                     profession: this.customer.profession,
                     profile: this.customer.profile
                 }
+                // 将获取的对象添加到user中并弹出对应的警示框
                 this.$http.post('http://127.0.0.1:3000/user',newCustomer).then(res => {
                     this.$router.push({path: '/costumers',query: {alert: "用户信息添加成功！"}})
                 }).catch(error => {
@@ -68,9 +75,11 @@ export default {
                 })
             }
             e.preventDefault();
-            
         }
     },
+    components: {
+        Alert
+    }
 }
 </script>
 

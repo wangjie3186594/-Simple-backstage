@@ -2,6 +2,10 @@
     <div class="costumers container">
         <Alert v-if="alert" :message="alert"></Alert>
         <h1 class="page-header">用户后台管理系统</h1>
+
+        <!-- 搜索框 -->
+        <input type="text" class="form-control" placeholder="搜索" v-model="searchInput">
+
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -13,11 +17,12 @@
             </thead>
 
             <tbody>
-                <tr v-for="(costumers, index) in costumers" :key="index">
-                    <td> {{costumers.name}} </td>
-                    <td> {{costumers.phone}} </td>
-                    <td> {{costumers.email}} </td>
-                    <td> <router-link :to="'Customerdetails/'+ costumers.id" class="btn btn-default">详情</router-link> </td>
+                <tr v-for="(costumer, index) in filterSearh(dates, searchInput)" :key="index">
+                    <td> {{costumer.name}} </td>
+                    <td> {{costumer.phone}} </td>
+                    <td> {{costumer.email}} </td>
+                    <!-- 点击将当前对应的id传给跳转的详情页面 -->
+                    <td> <router-link :to="'Customerdetails/'+ costumer.id" class="btn btn-default">详情</router-link> </td>
                 </tr>
             </tbody>
         </table>
@@ -29,12 +34,12 @@ import Alert from './Alert'
 export default {
     data() {
         return {
-            costumers: [],
-            alert: ''
+            dates: [],                  // 获取user中所有用户信息
+            alert: '',                  // 弹出框中显示信息
+            searchInput: ''             // 搜索框中的信息
         }
     },
     created() {
-        // console.log(this.$route)
         // 判断当前用户是否添加用户信息 成功弹出信息 失败
         if(this.$route.query.alert){
             this.alert = this.$route.query.alert
@@ -44,9 +49,14 @@ export default {
     methods: {
         fetchCosTumers(){
             this.$http.get('http://127.0.0.1:3000/user').then(res => {
-                this.costumers = res.body
+                this.dates = res.body
             }).catch(error => {
                 console.log(error)
+            })
+        },
+        filterSearh(dates, value){
+            return dates.filter(res => {
+                return res.name.match(value)
             })
         }
     },

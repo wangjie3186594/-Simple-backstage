@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-let Hello=()=>import('@/components/Hello')
 let About=()=>import('@/components/About')
 let Costumers=()=>import('@/components/Costumers')
 let Add=()=>import('@/components/Add')
